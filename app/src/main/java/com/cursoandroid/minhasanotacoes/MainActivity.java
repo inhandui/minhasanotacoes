@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +35,12 @@ public class MainActivity extends AppCompatActivity {
         btnSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gravarArquivo(txtAnotacoes.getText().toString());
+                if (gravarArquivo(txtAnotacoes.getText().toString())){
+                    Toast.makeText(MainActivity.this, R.string.arquivo_ok, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, R.string.arquivo_erro, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -42,18 +48,25 @@ public class MainActivity extends AppCompatActivity {
         if (conteudo_anotacoes != null){
             txtAnotacoes.setText(conteudo_anotacoes);
         }
+        else {
+            Toast.makeText(MainActivity.this, R.string.leitura_erro, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void gravarArquivo(String texto) {
-
+    private boolean gravarArquivo(String texto) {
+        boolean resultado;
         try{
             OutputStreamWriter outputSW = new OutputStreamWriter( openFileOutput(ARQUIVO_ANOTACOES, Context.MODE_PRIVATE));
             outputSW.write(texto);
             outputSW.close();
+            resultado = true;
 
         }catch (IOException e){
             Log.v("MainActivity", e.toString());
+            resultado = false;
         }
+
+        return resultado;
     }
 
 
