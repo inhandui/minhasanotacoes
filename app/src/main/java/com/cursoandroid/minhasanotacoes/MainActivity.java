@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        String conteudo_anotacoes = lerArquivo(ARQUIVO_ANOTACOES);
+        if (conteudo_anotacoes != null){
+            txtAnotacoes.setText(conteudo_anotacoes);
+        }
     }
 
     private void gravarArquivo(String texto) {
@@ -50,4 +57,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private String lerArquivo(String nome){
+
+        String resultado = "";
+
+        try {
+            //Open file
+            InputStream inputS = openFileInput(ARQUIVO_ANOTACOES);
+
+            if (inputS != null){
+                //read file
+                InputStreamReader inputSR = new InputStreamReader(inputS);
+                //Get file buffer
+                BufferedReader bufferedR = new BufferedReader(inputSR);
+                //Recovery file content
+                String linha = "";
+                while( (linha = bufferedR.readLine()) != null ){
+                    resultado += linha;
+                }
+
+                //close file
+                inputS.close();
+            }
+
+        }catch (IOException e){
+            Log.v("MainActivity", e.toString());
+        }
+
+        return resultado;
+    }
 }
